@@ -110,7 +110,7 @@ const drivers = {
     }),
     str: new Driver({
         name: "Lance Stroll",
-        peakSkill: 6, currentSkill: 5, rainSpecialist: true, tyreManagement: 5,
+        peakSkill: 6, currentSkill: 6, rainSpecialist: true, tyreManagement: 5,
         lapConsistency: 5, raceConsistency: 3,
         overtaking: 6, defense: 5, errorProneness: 8,
     }),
