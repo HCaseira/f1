@@ -14,20 +14,21 @@
 </head>
 <body>
     <row id="header">
+        <icon id="settingsButton" class="material-symbols-outlined icon-button" onclick="toggleSettings()">settings</icon>
         <spacer></spacer>
-        <column>
+        <column class="hidden">
             <label for="input_simulationSpeed">Simulation Speed</label>
             <input id="input_simulationSpeed" type="number" placeholder="milliseconds" min="50" max="10000" value="1000" onchange="setSimulationSpeed(this)"/>
         </column>
-        <column>
+        <column class="hidden">
             <label for="input_animation">Show Animations</label>
             <input id="input_animation" type="checkbox" onchange="setAnimation(this)"/>
         </column>
-        <column>
+        <column class="hidden">
             <label for="input_autoContinue">Auto Continue</label>
             <input id="input_autoContinue" type="checkbox" onchange="setAutoContinue(this)"/>
         </column>
-        <column>
+        <column class="hidden">
             <label for="input_dnfs">DNFs</label>
             <input id="input_dnfs" type="checkbox" checked onchange="setDnfs(this)"/>
         </column>

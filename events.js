@@ -461,10 +461,11 @@ class RaceEvent {
         row = document.createElement("row");
         row.classList.add("race-event-results-header");
         ctrl.appendChild(row);
+        const compact = document.body.offsetWidth < 600;
 
-        const columns = (document.body.offsetWidth > 600) ?
-            ["Pos", "Driver", "Interval", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"] :
-            ["Pos", "Driver", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"];
+        const columns = compact ?
+            ["Pos", "Driver", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"] :
+            ["Pos", "Driver", "Interval", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"];
         for (col of columns) {
             label = document.createElement("h5");
             label.innerHTML = col;
@@ -482,7 +483,7 @@ class RaceEvent {
             row.appendChild(col);
 
             drvName = drv.driver.name;
-            if (document.body.offsetWidth < 600) {
+            if (compact) {
                 drvName = drvName.split(" ");
                 drvName = drvName[drvName.length-1];
             }
@@ -493,7 +494,7 @@ class RaceEvent {
             col.classList.add("race-event-results-driver");
             row.appendChild(col);
 
-            if (document.body.offsetWidth > 600) {
+            if (!compact) {
                 col = document.createElement("span");
                 if (drv.dnf) {
                     col.innerHTML = drv.dnf;
@@ -507,6 +508,8 @@ class RaceEvent {
             if (firstDrv && !drv.dnf) {
                 diff = drv.totalTime - firstDrv.totalTime;
                 col.innerHTML = new Date(diff * 1000).toISOString().substring(15, 23);
+            } else if (compact && drv.dnf) {
+                col.innerHTML = drv.dnf;
             }
             row.appendChild(col);
             
@@ -546,7 +549,7 @@ class RaceEvent {
 
         for (i = 0; i < results.length; i++) {
             drv = results[i];
-            speed = Math.max(5, 10 - ((drv.laps[drv.laps.length-1] - this.track.refereceLapTime) / 2));
+            speed = Math.max(8, 10 - ((drv.laps[drv.laps.length-1] - this.track.refereceLapTime) / 2));
             if (firstDrv && !drv.dnf) {
                 diff = drv.totalTime - firstDrv.totalTime;
                 cars.push({

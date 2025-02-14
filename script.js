@@ -183,8 +183,20 @@ class Season {
 }
 
 
+const toggleSettings = () => {
+    const button = document.getElementById("settingsButton");
+    const settings = [...button.parentElement.getElementsByTagName("column")];
 
-Season.simulationSpeed = 1000;
+    if (button.innerText === "settings") {
+        button.innerText = "close";
+        settings.forEach((elem) => elem.classList.remove("hidden"));
+    } else {
+        button.innerText = "settings";
+        settings.forEach((elem) => elem.classList.add("hidden"));
+    }
+};
+
+Season.simulationSpeed = 500;
 const setSimulationSpeed = (input) => {
     Season.simulationSpeed = parseInt(input.value);
     localStorage.setItem("input_simulationSpeed", Season.simulationSpeed);
@@ -197,13 +209,13 @@ const setAutoContinue = (input) => {
     localStorage.setItem("input_autoContinue", Season.autoContinue);
 };
 
-Season.dnfs = false;
+Season.dnfs = true;
 const setDnfs = (input) => {
     Season.dnfs = input.checked;
     localStorage.setItem("input_dnfs", Season.dnfs);
 };
 
-Season.showAnimation = false;
+Season.showAnimation = true;
 const setAnimation = (input) => {
     Season.showAnimation = input.checked;
     localStorage.setItem("input_animation", Season.showAnimation);
@@ -258,6 +270,7 @@ window.onload = () => {
     document.getElementById("input_animation").checked = Season.showAnimation;
 
     const wrap = document.createElement("wrap");
+    wrap.style.justifyContent = "center";
     document.getElementById("screen").appendChild(wrap);
 
     const tyre = new Tyre({ name: "S", tyreLife: 10, performance: 0, driver: drivers.ver, color: "#d00" });
