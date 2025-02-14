@@ -71,7 +71,7 @@ class RaceEvent {
     _renderWelcomeScreen() {
         // Ensure controls are created
         this.getControl();
-        
+
         // Previous pole-sitters
         // Previous winners
         
@@ -179,7 +179,7 @@ class RaceEvent {
 
                 if (currentDrv < phase.drvCount) {
                     results = this._nextQualyLap(drivers[currentDrv], phase.lapsKey);
-                    this._printQualyResults(results, phase, phases);
+                    this._printQualyResults(drivers[currentDrv], results, phase, phases);
                     currentDrv++;
                 } else {
                     currentDrv = 0;
@@ -190,10 +190,25 @@ class RaceEvent {
         runPhase(0);
     }
 
-    _printQualyResults(results, phase, phases) {
-        let i, row, col, label, drv, lapsKey, laps, lap, bestLap, fastestLap;
+    _printQualyResults(driver, results, phase, phases) {
+        let i, row, col, label, drv, drvName, lapsKey, laps, lap, bestLap, fastestLap;
         
         phase.ctrl.innerHTML = "";
+        // let currentX = document.body.offsetWidth;
+        // const car = driver.team.getCar(this._track.getSoftTyre(driver.driver));
+        // car.style.left = `${currentX}px`;
+        // this.animationCtrl.innerHTML = "";
+        // this.animationCtrl.appendChild(car);
+        
+        // const ttl = window.setInterval(() => {
+        //     if (currentX < -200) {
+        //         window.clearInterval(ttl);
+        //         car.remove();
+        //         return;
+        //     }
+        //     currentX -= 50;
+        //     car.style.left = `${currentX}px`;
+        // }, 25);
 
         row = document.createElement("row");
         row.classList.add("race-event-results-header");
@@ -216,8 +231,16 @@ class RaceEvent {
             col.innerHTML = i + 1;
             row.appendChild(col);
 
+            drvName = drv.driver.name;
+            if (document.body.offsetWidth < 600) {
+                drvName = drvName.split(" ");
+                drvName = drvName[drvName.length-1];
+            }
+
             col = document.createElement("span");
-            col.innerHTML = drv.driver.name;
+            col.innerHTML = drvName;
+            col.style.setProperty("--team-color", drv.team.color);
+            col.classList.add("race-event-results-driver");
             row.appendChild(col);
 
             bestLap = 10000;
@@ -232,19 +255,19 @@ class RaceEvent {
             
             col = document.createElement("span");
             if (laps.length > 0) {
-                col.innerHTML =  new Date(bestLap * 1000).toISOString().substring(14);
+                col.innerHTML =  new Date(bestLap * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
 
             col = document.createElement("span");
             if (laps.length > 0) {
-                col.innerHTML =  new Date(laps[laps.length - 1] * 1000).toISOString().substring(14);
+                col.innerHTML =  new Date(laps[laps.length - 1] * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
 
             col = document.createElement("span");
             if (fastestLap && laps.length > 0) {
-                col.innerHTML = new Date((bestLap - fastestLap) * 1000).toISOString().substring(14);
+                col.innerHTML = new Date((bestLap - fastestLap) * 1000).toISOString().substring(18, 23);
             }
             row.appendChild(col);
 
@@ -309,7 +332,7 @@ class RaceEvent {
     }
 
     _runRace() {
-        let results;
+        // let results;
 
         this.resultsCtrl.innerHTML = "";
 
@@ -329,45 +352,119 @@ class RaceEvent {
         resultsCtrl.classList.add("race-event-results");
         this.resultsCtrl.appendChild(resultsCtrl);
 
-        const interval = window.setInterval(() => {
-            if (this.finished) {
-                window.clearInterval(interval);
+        this._showRaceStartAnimation(() => this._raceLoop(lapsCtrl, resultsCtrl));
+    }
 
-                const finishRaceCtrl = document.createElement("button");
-                finishRaceCtrl.innerText = "Finish Event";
-                finishRaceCtrl.onclick = () => {
-                    window.clearTimeout(this.timeout);
-                    finishRaceCtrl.remove();
-                    this.onRaceFinished();
-                };
-                this.actionsCtrl.innerHTML = "";
-                this.actionsCtrl.appendChild(finishRaceCtrl);
+    _showRaceStartAnimation(callback) {
+        let i, drv, ttl, currentSpeed;
+        const cars = [];
 
-                if (Season.autoContinue) {
-                    this.timeout = window.setTimeout(() => {
-                        finishRaceCtrl.click();
-                    }, Season.autoContinueSpeed);
+        for (i = 0; i < this._drivers.length; i++) {
+            drv = this._drivers[i];
+            cars.push({
+                car: drv.team.getCar(drv.tyres[drv.tyres.length-1]),
+                left: document.body.offsetWidth + (i * 100),
+                top: Math.random() * 5 + ((i % 2) === 0 ? 10 : 50),
+            });
+        }
+
+        this.animationCtrl.innerHTML = "";
+        const lastCar = cars[cars.length-1];
+        cars.sort((a, b) => {
+            if (a.top > b.top) return 1;
+            if (a.top < b.top) return -1;
+            return 0;
+        });
+        for (let car of cars) {
+            car.car.style.left = `${car.left}px`;
+            this.animationCtrl.appendChild(car.car);
+        }
+
+        const multiplier = 2000 * 0.03 / document.body.offsetWidth;
+        const animation1 = () => {
+            currentSpeed = 10;
+            ttl = window.setInterval(() => {
+                if (lastCar.left < (100 * cars.length)) {
+                    window.clearInterval(ttl);
+                    window.setTimeout(animation2, 5000);
+                    return;
                 }
+    
+                for (let car of cars) {
+                    car.left -= currentSpeed;
+                    car.car.style.top = `${car.top}px`;
+                    car.car.style.left = `${car.left}px`;
+                }
+                currentSpeed = Math.max(2, currentSpeed-multiplier);
+            }, 10);
+        }
 
-                return;
+        const animation2 = () => {
+            currentSpeed = 1;
+            ttl = window.setInterval(() => {
+                if (lastCar.left < -200) {
+                    window.clearInterval(ttl);
+                    for (let car of cars) {
+                        car.car.remove();
+                    }
+                    callback();
+                    return;
+                }
+    
+                for (let car of cars) {
+                    car.left -= Math.random() * 2 + currentSpeed;
+                    car.car.style.top = `${car.top}px`;
+                    car.car.style.left = `${car.left}px`;
+                }
+                currentSpeed = Math.min(10, currentSpeed+0.1);
+            }, 10);
+        }
+
+        animation1();
+    }
+
+    _raceLoop(lapsCtrl, resultsCtrl) {
+        if (this.finished) {
+            const finishRaceCtrl = document.createElement("button");
+            finishRaceCtrl.innerText = "Finish Event";
+            finishRaceCtrl.onclick = () => {
+                window.clearTimeout(this.timeout);
+                finishRaceCtrl.remove();
+                this.onRaceFinished();
+            };
+            this.actionsCtrl.innerHTML = "";
+            this.actionsCtrl.appendChild(finishRaceCtrl);
+
+            if (Season.autoContinue) {
+                this.timeout = window.setTimeout(() => {
+                    finishRaceCtrl.click();
+                }, Season.autoContinueSpeed);
             }
+            return;
+        }
 
-            results = this._nextRaceLap();
-            lapsCtrl.innerHTML = `${this.lapsRemaining} laps remaining`;
-            this._printRaceResults(results, resultsCtrl);
-        }, Season.simulationSpeed);
+        const results = this._nextRaceLap();
+        lapsCtrl.innerHTML = `${this.lapsRemaining} laps remaining`;
+        this._printRaceResults(results, resultsCtrl);
+        if (Season.showAnimation) {
+            this._showLapAnimation(results, () => this._raceLoop(lapsCtrl, resultsCtrl));
+        } else {
+            window.setTimeout(() => this._raceLoop(lapsCtrl, resultsCtrl), Season.simulationSpeed);
+        }
     }
 
     _printRaceResults(results, ctrl) {
-        let i, row, col, label, drv, prevDrv, firstDrv;
-        
+        let i, row, col, label, drv, drvName, prevDrv, firstDrv, diff;
+
         ctrl.innerHTML = "";
 
         row = document.createElement("row");
         row.classList.add("race-event-results-header");
         ctrl.appendChild(row);
 
-        const columns = ["Pos", "Driver", "Interval", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"];
+        const columns = (document.body.offsetWidth > 600) ?
+            ["Pos", "Driver", "Interval", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"] :
+            ["Pos", "Driver", "Gap", "Lap", "Lap + 1", "Lap + 2", "Tyre"];
         for (col of columns) {
             label = document.createElement("h5");
             label.innerHTML = col;
@@ -384,39 +481,50 @@ class RaceEvent {
             col.innerHTML = i + 1;
             row.appendChild(col);
 
-            col = document.createElement("span");
-            col.innerHTML = drv.driver.name;
-            row.appendChild(col);
+            drvName = drv.driver.name;
+            if (document.body.offsetWidth < 600) {
+                drvName = drvName.split(" ");
+                drvName = drvName[drvName.length-1];
+            }
 
             col = document.createElement("span");
-            if (drv.dnf) {
-                col.innerHTML = drv.dnf;
-            } else if (prevDrv) {
-                col.innerHTML = new Date((drv.totalTime - prevDrv.totalTime) * 1000).toISOString().substring(14);
-            }
+            col.innerHTML = drvName;
+            col.style.setProperty("--team-color", drv.team.color);
+            col.classList.add("race-event-results-driver");
             row.appendChild(col);
+
+            if (document.body.offsetWidth > 600) {
+                col = document.createElement("span");
+                if (drv.dnf) {
+                    col.innerHTML = drv.dnf;
+                } else if (prevDrv) {
+                    col.innerHTML = new Date((drv.totalTime - prevDrv.totalTime) * 1000).toISOString().substring(15, 23);
+                }
+                row.appendChild(col);
+            }
             
             col = document.createElement("span");
             if (firstDrv && !drv.dnf) {
-                col.innerHTML = new Date((drv.totalTime - firstDrv.totalTime) * 1000).toISOString().substring(14);
+                diff = drv.totalTime - firstDrv.totalTime;
+                col.innerHTML = new Date(diff * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
             
             col = document.createElement("span");
             if (!drv.dnf) {
-                col.innerHTML =  new Date(drv.laps[drv.laps.length - 1] * 1000).toISOString().substring(14);
+                col.innerHTML =  new Date(drv.laps[drv.laps.length - 1] * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
 
             col = document.createElement("span");
             if (drv.laps.length > 1) {
-                col.innerHTML =  new Date(drv.laps[drv.laps.length - 2] * 1000).toISOString().substring(14);
+                col.innerHTML =  new Date(drv.laps[drv.laps.length - 2] * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
 
             col = document.createElement("span");
             if (drv.laps.length > 2) {
-                col.innerHTML =  new Date(drv.laps[drv.laps.length - 3] * 1000).toISOString().substring(14);
+                col.innerHTML =  new Date(drv.laps[drv.laps.length - 3] * 1000).toISOString().substring(15, 23);
             }
             row.appendChild(col);
 
@@ -430,6 +538,65 @@ class RaceEvent {
                 firstDrv = drv;
             }
         }
+    }
+
+    _showLapAnimation(results, callback) {
+        let i, drv, prevDrv, firstDrv, diff, speed;
+        const cars = [];
+
+        for (i = 0; i < results.length; i++) {
+            drv = results[i];
+            speed = Math.max(5, 10 - ((drv.laps[drv.laps.length-1] - this.track.refereceLapTime) / 2));
+            if (firstDrv && !drv.dnf) {
+                diff = drv.totalTime - firstDrv.totalTime;
+                cars.push({
+                    car: drv.team.getCar(drv.tyres[drv.tyres.length-1]),
+                    left: document.body.offsetWidth + (diff * 200),
+                    top: Math.random() * 40,
+                    speed: speed,
+                });
+            }
+
+            prevDrv = drv;
+            if (i === 0) {
+                firstDrv = drv;
+                cars.push({
+                    car: drv.team.getCar(drv.tyres[drv.tyres.length-1]),
+                    left: document.body.offsetWidth,
+                    top: Math.random() * 50,
+                    speed: speed,
+                });
+            }
+        }
+
+        this.animationCtrl.innerHTML = "";
+        const lastCar = cars[cars.length-1];
+        cars.sort((a, b) => {
+            if (a.top > b.top) return 1;
+            if (a.top < b.top) return -1;
+            return 0;
+        });
+        for (let car of cars) {
+            car.car.style.left = `${car.left}px`;
+            this.animationCtrl.appendChild(car.car);
+        }
+
+        const ttl = window.setInterval(() => {
+            if (lastCar.left < -200) {
+                window.clearInterval(ttl);
+                for (let car of cars) {
+                    car.car.remove();
+                }
+                callback();
+                return;
+            }
+
+            for (let car of cars) {
+                car.left -= car.speed;
+                car.car.style.top = `${car.top}px`;
+                car.car.style.left = `${car.left}px`;
+            }
+        }, 10);
     }
 
     _calcDriverLap(drv, referenceLapTime) {
@@ -533,9 +700,33 @@ class RaceEvent {
             this.actionsCtrl = document.createElement("row");
             this.actionsCtrl.classList.add("race-event-actions");
 
+            const animationHolder = document.createElement("column");
+            animationHolder.classList.add("race-event-animation");
+
+            const sky = document.createElement("div");
+            sky.id = "race-event-animation-sky";
+            sky.classList.add("race-event-animation-sky");
+            animationHolder.appendChild(sky);
+            const clouds = Math.random() * 50 + 10;
+            for (let i = 0; i < clouds; i++) {
+                let cloud = document.createElement("div");
+                cloud.classList.add("cloud");
+                cloud.style.setProperty("--top", Math.random() * 100);
+                cloud.style.setProperty("--left", Math.random() * 300);
+                cloud.style.setProperty("--transform", Math.random() * 2);
+                cloud.style.setProperty("--opacity", Math.random() * 60);
+                cloud.style.setProperty("--speed", `${Math.random() * 20 + 40}s`);
+                sky.appendChild(cloud);
+            }
+
+            this.animationCtrl = document.createElement("div");
+            this.animationCtrl.classList.add("race-event-animation-track");
+            animationHolder.appendChild(this.animationCtrl);
+
             this.ctrl = document.createElement("column");
             this.ctrl.classList.add("race-event");
             this.ctrl.appendChild(headerCtrl);
+            this.ctrl.appendChild(animationHolder);
             this.ctrl.appendChild(this.resultsCtrl);
             this.ctrl.appendChild(this.actionsCtrl);
         }

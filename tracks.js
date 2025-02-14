@@ -6,11 +6,13 @@ class Tyre {
         this._tyreLife = Math.max(5, args.tyreLife ?? 20) + this._driver.tyreManagement * 0.3;
         this._tyreLife += this._tyreLife * this._driver.tyreManagement * 0.3 / 10;
         this._laps = 0;
+        this._color = args.color ?? "";
     }
 
     get name() { return this._name; }
     get life() { return this._tyreLife; }
     get laps() { return this._laps; }
+    get color() { return this._color; }
 
     calcDriverLap(referenceLapTime) {
         const consistencyDelta = 10 - this._driver.lapConsistency / 1.3; // otherwise a driver with 'lapConsistency' of 10 would always produce the same lap time
@@ -56,15 +58,15 @@ class Track {
     get pitTime() { return this._pitTime; }
 
     getSoftTyre(driver) {
-        return new Tyre({ name: "S", tyreLife: this._softTyreLife, performance: 0, driver: driver });
+        return new Tyre({ name: "S", tyreLife: this._softTyreLife, performance: 0, driver: driver, color: "#d00" });
     }
 
     getMediumTyre(driver) {
-        return new Tyre({ name: "M", tyreLife: this._mediumTyreLife, performance: 0.8, driver: driver });
+        return new Tyre({ name: "M", tyreLife: this._mediumTyreLife, performance: 0.8, driver: driver, color: "#D4AF37" });
     }
 
     getHardTyre(driver) {
-        return new Tyre({ name: "H", tyreLife: this._hardTyreLife, performance: 1.5, driver: driver});
+        return new Tyre({ name: "H", tyreLife: this._hardTyreLife, performance: 1.5, driver: driver, color: "#ddd" });
     }
 
     buildTyreStrategy(driver, strategyIndex = 0) {

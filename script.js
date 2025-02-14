@@ -4,6 +4,14 @@ class Season {
         this.pointsSystem = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
     }
 
+    start1986() {
+        
+    }
+
+    start2012() {
+
+    }
+
     start2024() {
         teams.rbr.driver1 = drivers.ver;
         teams.rbr.driver2 = drivers.per;
@@ -195,6 +203,12 @@ const setDnfs = (input) => {
     localStorage.setItem("input_dnfs", Season.dnfs);
 };
 
+Season.showAnimation = false;
+const setAnimation = (input) => {
+    Season.showAnimation = input.checked;
+    localStorage.setItem("input_animation", Season.showAnimation);
+};
+
 const startSeason = () => {
     window.season = new Season();
     window.season.start2024();
@@ -237,7 +251,18 @@ window.onload = () => {
     Season.simulationSpeed = parseInt(localStorage.getItem("input_simulationSpeed") ?? Season.simulationSpeed);
     Season.autoContinue = parseBool(localStorage.getItem("input_autoContinue") ?? Season.autoContinue);
     Season.dnfs = parseBool(localStorage.getItem("input_dnfs") ?? Season.dnfs);
+    Season.showAnimation = parseBool(localStorage.getItem("input_animation") ?? Season.showAnimation);
     document.getElementById("input_simulationSpeed").value = Season.simulationSpeed;
     document.getElementById("input_autoContinue").checked = Season.autoContinue
     document.getElementById("input_dnfs").checked = Season.dnfs;
+    document.getElementById("input_animation").checked = Season.showAnimation;
+
+    const wrap = document.createElement("wrap");
+    document.getElementById("screen").appendChild(wrap);
+
+    const tyre = new Tyre({ name: "S", tyreLife: 10, performance: 0, driver: drivers.ver, color: "#d00" });
+    for (let key in teams) {
+        let car = teams[key].getCar(tyre);
+        wrap.appendChild(car);
+    }
 };

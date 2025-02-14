@@ -4,6 +4,9 @@ body {
     color: #e6e6e6;
     background-color: #292929;
     font-family: sans-serif;
+    font-size: 14px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 column {
@@ -62,8 +65,41 @@ grid {
     border-bottom: 1px solid grey;
 }
 .race-event-results-header { text-transform: uppercase; color: #e6e6e6; }
+.race-event-results-driver::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 10px;
+    margin-right: 3px;
+    background-color: var(--team-color);
+}
 .race-event-actions {
     
+}
+.race-event-animation {
+    height: 200px;
+    overflow: hidden;
+}
+.race-event-animation-sky {
+    flex: 1;
+    position: relative;
+    background-color: skyblue;
+    background: linear-gradient(180deg, #517fc2 0%, skyblue 100%);
+}
+.race-event-animation-track {
+    flex: 1;
+    position: relative;
+    background-color: #4b4b50;
+    background-image: url(asphalt2.jpeg);
+    background-size: contain;
+    background-blend-mode: multiply;
+}
+.race-event-animation-track > .race-event-animation-car {
+    position: absolute;
+}
+.race-event-animation-car {
+    width: 150px;
+    height: auto;
 }
 
 .season-points {
@@ -84,3 +120,26 @@ grid {
 }
 #header > spacer { flex: 1; }
 #header label { font-size: small; color: grey; }
+
+
+
+.cloud {
+    width: 100px;
+    height: 25px;
+    position: absolute;
+    /* background-color: white; */
+    background-image: url(cloud2.svg);
+    background-repeat: no-repeat;
+
+    top: calc(var(--top) / 50 * 90%);
+    left: calc(var(--left) / 150 * 100% + 50%);
+    transform: scale(calc(var(--transform) - 0.5));
+    opacity: calc(var(--opacity) / 100);
+    animation: moveclouds var(--speed) linear infinite;
+}
+
+@keyframes moveclouds {
+    100% {
+        left: -50%;
+    }
+}
