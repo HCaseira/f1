@@ -99,7 +99,8 @@ class Season {
     }
 
     printSeasonResults() {
-        let i, col, label, drv;
+        let i, col, label, drv, drvName;
+        const compact = document.body.offsetWidth < 600;
 
         const screen = document.getElementById("screen");
         screen.innerHTML = "";
@@ -111,11 +112,16 @@ class Season {
         const grid = document.createElement("grid");
         grid.classList.add("season-points");
         screen.appendChild(grid);
-        
-        const columns = ["Pos", "Driver", "Points", "Victories", "Podiums", "Fastest Laps", "Poles", "DNFs"];
-        for (col of columns) {
+
+        const compactColumns = ["Pos", "Drv", "Pts", "V", "P", "FL", "PP", "DNF"];
+        const fullColumns = ["Pos", "Driver", "Points", "Victories", "Podiums", "Fastest Laps", "Poles", "DNFs"];
+        const columns = compact ? compactColumns : fullColumns;
+        for (i = 0; i < columns.length; i++) {
             label = document.createElement("label");
-            label.innerHTML = col;
+            label.innerHTML = columns[i];
+            if (compact) {
+                label.title = fullColumns[i];
+            }
             grid.appendChild(label);
         }
 
@@ -147,12 +153,18 @@ class Season {
                 continue;
             }
 
+            drvName = drv.name;
+            if (compact) {
+                drvName = drvName.split(" ");
+                drvName = drvName[drvName.length-1];
+            }
+
             col = document.createElement("span");
             col.innerHTML = i + 1;
             grid.appendChild(col);
 
             col = document.createElement("span");
-            col.innerHTML = drv.name;
+            col.innerHTML = drvName;
             grid.appendChild(col);
 
             col = document.createElement("span");

@@ -590,7 +590,7 @@ class RaceEvent {
                 for (let car of cars) {
                     car.car.remove();
                 }
-                callback();
+                window.setTimeout(callback, 1000);
                 return;
             }
 
