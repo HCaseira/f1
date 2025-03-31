@@ -2308,7 +2308,7 @@
                                 {
                                   "_id": "2c3668b5-9834-49ea-8259-8c2946e2ce0c",
                                   "_type": "listView",
-                                  "name": "TYRES",
+                                  "name": "TYRES ",
                                   "properties": {
                                     "scrollDirection": "horizontal",
                                     "shrinkWrap": "true",
@@ -3870,7 +3870,7 @@
                             {
                               "_id": "ee1b6eda-08c1-4a3e-be85-5bf45ea8687c",
                               "_type": "listView",
-                              "name": "TYRES",
+                              "name": "TYRES ",
                               "properties": {
                                 "scrollDirection": "horizontal",
                                 "shrinkWrap": "true",
