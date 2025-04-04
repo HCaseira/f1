@@ -9,6 +9,26 @@
       "_id": "be5c21a3-2ede-4811-8fdf-f14d59e0e524",
       "_type": "Screen",
       "name": "Main",
+      "actions": {
+        "onEnter": {
+          "_id": "69f12aa6-4864-4661-862f-d78cdee95351",
+          "_type": "CanRestoreSeason",
+          "properties": {
+            "returnName": "canRestore"
+          },
+          "actions": {
+            "nextAction": {
+              "_id": "8c9a1712-e69c-41d2-a5da-2343c20eb3be",
+              "_type": "KActionSetState",
+              "properties": {
+                "newState": {
+                  "canRestore": "${canRestore}"
+                }
+              }
+            }
+          }
+        }
+      },
       "widgets": {
         "body": {
           "_id": "a4264991-4725-47b2-aba4-888b1f2f225c",
@@ -53,7 +73,29 @@
                           "_type": "elevatedButton",
                           "name": "Continue Season",
                           "properties": {
-                            "text": "continue_season"
+                            "text": "continue_season",
+                            "buildCondition": {
+                              "_type": "OperatorCondition",
+                              "left": "${state.canRestore}",
+                              "operator": "==",
+                              "right": "true"
+                            }
+                          },
+                          "actions": {
+                            "onPressed": {
+                              "_id": "df76354a-58b9-48f1-873e-240bca387fd1",
+                              "_type": "RestoreSeason",
+                              "actions": {
+                                "nextAction": {
+                                  "_id": "b271631e-239b-4362-abf5-fe6956f65234",
+                                  "_type": "KActionNavigate",
+                                  "properties": {
+                                    "jumpToScreen": "9b5ab083-6dbe-4a7b-8893-49b805b34e36",
+                                    "replacePrevious": "true"
+                                  }
+                                }
+                              }
+                            }
                           }
                         },
                         {
@@ -72,11 +114,17 @@
                           },
                           "actions": {
                             "onPressed": {
-                              "_id": "41a558ef-788d-497c-b50a-15c72f6b50b6",
-                              "_type": "KActionNavigate",
-                              "properties": {
-                                "jumpToScreen": "9b5ab083-6dbe-4a7b-8893-49b805b34e36",
-                                "replacePrevious": "true"
+                              "_id": "2ed83584-24ea-4d3f-871c-bbf28582534c",
+                              "_type": "New2024Season",
+                              "actions": {
+                                "nextAction": {
+                                  "_id": "b22085a1-a557-4880-8278-605d1827f52c",
+                                  "_type": "KActionNavigate",
+                                  "properties": {
+                                    "jumpToScreen": "9b5ab083-6dbe-4a7b-8893-49b805b34e36",
+                                    "replacePrevious": "true"
+                                  }
+                                }
                               }
                             }
                           }
@@ -123,6 +171,14 @@
             "body": {
               "_id": "41f34e6a-9ded-4390-89e9-4e63e25bb1cf",
               "_type": "column",
+              "properties": {
+                "safeArea": {
+                  "left": "true",
+                  "top": "true",
+                  "right": "true",
+                  "bottom": "true"
+                }
+              },
               "widgets": {
                 "children": [
                   {
@@ -728,6 +784,14 @@
             "body": {
               "_id": "a342fd61-3048-490f-877f-f2a788228021",
               "_type": "column",
+              "properties": {
+                "safeArea": {
+                  "left": "true",
+                  "top": "true",
+                  "right": "true",
+                  "bottom": "true"
+                }
+              },
               "widgets": {
                 "children": [
                   {
@@ -1561,7 +1625,13 @@
               "_id": "a0fcca02-cec6-40d2-92d0-959220470fa4",
               "_type": "column",
               "properties": {
-                "crossAxisAlignment": "stretch"
+                "crossAxisAlignment": "stretch",
+                "safeArea": {
+                  "left": "true",
+                  "top": "true",
+                  "right": "true",
+                  "bottom": "true"
+                }
               },
               "widgets": {
                 "children": [
@@ -1596,7 +1666,7 @@
                                   "decorator": {
                                     "width": "20"
                                   },
-                                  "value": "${math.add(${idx},1)}",
+                                  "value": "${toInt(${math.add(${idx},1)})}",
                                   "textAlign": "center"
                                 }
                               },
@@ -1654,7 +1724,7 @@
                                 "_type": "text",
                                 "name": "Short Name",
                                 "properties": {
-                                  "value": "${entry.driver.shortName}",
+                                  "value": "${entry.driver.lastName}",
                                   "buildCondition": {
                                     "_type": "OperatorCondition",
                                     "left": "${media.shortestSide}",
@@ -1763,8 +1833,13 @@
                               "_id": "3c5c80b7-d3a4-4c41-8cba-1ccbf933c199",
                               "_type": "KActionNavigate",
                               "properties": {
-                                "jumpToScreen": "00ef28dc-eb05-4949-8e40-b158bfaf1cfc",
-                                "replacePrevious": "true"
+                                "jumpToScreen": "00ef28dc-eb05-4949-8e40-b158bfaf1cfc"
+                              },
+                              "actions": {
+                                "onPop": {
+                                  "_id": "f95c1cca-0e2c-4c3f-922e-777401fe83d1",
+                                  "_type": "KActionPop"
+                                }
                               }
                             }
                           },
@@ -1908,7 +1983,13 @@
               "_type": "column",
               "properties": {
                 "crossAxisAlignment": "stretch",
-                "mainAxisSize": "max"
+                "mainAxisSize": "max",
+                "safeArea": {
+                  "left": "true",
+                  "top": "true",
+                  "right": "true",
+                  "bottom": "true"
+                }
               },
               "widgets": {
                 "children": [
@@ -2059,7 +2140,7 @@
                                     },
                                     "verticalArea": "75",
                                     "carWidth": "100",
-                                    "speed": "0.5"
+                                    "animationDuration": "1300"
                                   },
                                   "actions": {
                                     "onAnimationFinished": {
@@ -2183,7 +2264,7 @@
                                           "decorator": {
                                             "width": "20"
                                           },
-                                          "value": "${math.add(${idx},1)}",
+                                          "value": "${toInt(${math.add(${idx},1)})}",
                                           "textAlign": "center"
                                         }
                                       },
@@ -2241,7 +2322,7 @@
                                         "_type": "text",
                                         "name": "Short Name",
                                         "properties": {
-                                          "value": "${entry.driver.shortName}",
+                                          "value": "${entry.driver.lastName}",
                                           "buildCondition": {
                                             "_type": "OperatorCondition",
                                             "left": "${media.shortestSide}",
@@ -2485,7 +2566,7 @@
                                     "decorator": {
                                       "width": "20"
                                     },
-                                    "value": "${math.add(${idx},1)}",
+                                    "value": "${toInt(${math.add(${idx},1)})}",
                                     "textAlign": "center",
                                     "style": {
                                       "fontSize": "12"
@@ -2552,7 +2633,7 @@
                                   "_type": "text",
                                   "name": "Short Name",
                                   "properties": {
-                                    "value": "${entry.driver.shortName}",
+                                    "value": "${entry.driver.lastName}",
                                     "buildCondition": {
                                       "_type": "OperatorCondition",
                                       "left": "${media.shortestSide}",
@@ -3572,7 +3653,7 @@
                                   "decorator": {
                                     "width": "20"
                                   },
-                                  "value": "${math.add(${idx},1)}",
+                                  "value": "${toInt(${math.add(${idx},1)})}",
                                   "textAlign": "center"
                                 }
                               },
@@ -3630,7 +3711,7 @@
                                 "_type": "text",
                                 "name": "Short Name",
                                 "properties": {
-                                  "value": "${entry.driver.shortName}",
+                                  "value": "${entry.driver.lastName}",
                                   "buildCondition": {
                                     "_type": "OperatorCondition",
                                     "left": "${media.shortestSide}",
@@ -3745,7 +3826,7 @@
                                       "decorator": {
                                         "width": "20"
                                       },
-                                      "value": "${math.add(${idx},1)}",
+                                      "value": "${toInt(${math.add(${idx},1)})}",
                                       "textAlign": "center"
                                     }
                                   },
@@ -3803,7 +3884,7 @@
                                     "_type": "text",
                                     "name": "Short Name",
                                     "properties": {
-                                      "value": "${entry.driver.shortName}",
+                                      "value": "${entry.driver.lastName}",
                                       "buildCondition": {
                                         "_type": "OperatorCondition",
                                         "left": "${media.shortestSide}",
@@ -4466,6 +4547,1168 @@
         }
       },
       "isRootNode": true
+    },
+    {
+      "_id": "cf71d7fb-b4a5-46bd-980e-01b0407f12d3",
+      "_type": "Screen",
+      "name": "Create Team",
+      "_folder": "781c6bd2-acb6-4e51-bd27-797748b62052",
+      "widgets": {
+        "body": {
+          "_id": "31e32d66-b606-4ffa-9acd-940cf41cd463",
+          "_type": "scaffold",
+          "name": "Create Team",
+          "widgets": {
+            "body": {
+              "_id": "7aa1238c-9659-415d-b292-5080dd6e432d",
+              "_type": "column",
+              "properties": {
+                "crossAxisAlignment": "stretch"
+              },
+              "widgets": {
+                "children": [
+                  {
+                    "_id": "7b607809-cc2b-4544-a4e6-1fc5b3c6c21c",
+                    "_type": "WidgetComponent",
+                    "name": "Name",
+                    "properties": {
+                      "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                      "title": "name"
+                    },
+                    "widgets": {
+                      "body": [
+                        {
+                          "_id": "8d69338f-5c54-4178-b5d9-fd572d529a83",
+                          "_type": "textFormField",
+                          "name": "Input",
+                          "properties": {
+                            "alias": "name",
+                            "required": "true"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "_id": "ceea2609-736c-4f89-95da-dc22480176c6",
+                    "_type": "sizedBox",
+                    "properties": {
+                      "height": "20"
+                    }
+                  },
+                  {
+                    "_id": "52ac2092-32dd-4b3b-ba9b-5f94c9b03701",
+                    "_type": "WidgetComponent",
+                    "name": "Livery",
+                    "properties": {
+                      "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                      "title": "livery"
+                    },
+                    "widgets": {
+                      "body": [
+                        {
+                          "_id": "40f7c3e6-5ef5-468d-a60b-43c62e266a85",
+                          "_type": "container",
+                          "properties": {
+                            "alignment": "center"
+                          },
+                          "widgets": {
+                            "child": {
+                              "_id": "1770d782-73e8-4cd0-8fd0-8da351bd7474",
+                              "_type": "stack",
+                              "properties": {
+                                "decorator": {
+                                  "height": "135",
+                                  "width": "300"
+                                }
+                              },
+                              "widgets": {
+                                "children": [
+                                  {
+                                    "_id": "010df093-a97a-4b66-8a28-6e87d7052ab7",
+                                    "_type": "Positioned",
+                                    "name": "Car Position",
+                                    "properties": {
+                                      "left": "0",
+                                      "top": "0",
+                                      "right": "0",
+                                      "bottom": "0"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "0a27ea68-ee9a-4f05-a27c-194f04d526f6",
+                                        "_type": "Car",
+                                        "name": "Car",
+                                        "properties": {
+                                          "height": "85",
+                                          "nose": "${state.noseColor}",
+                                          "body": "${state.bodyColor}",
+                                          "sidePods": "${state.sidePodsColor}",
+                                          "frontWing": "${state.frontWingColor}",
+                                          "backWing": "${state.backWingColor}",
+                                          "editable": "true"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "_id": "72700220-a767-4a15-9981-aea32282b51b",
+                                    "_type": "Positioned",
+                                    "name": "Nose Color",
+                                    "properties": {
+                                      "bottom": "70",
+                                      "left": "15"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "6bace0dd-5fd5-49d5-a3cf-42c3b41122d4",
+                                        "_type": "inkWell",
+                                        "name": "Nose Color",
+                                        "actions": {
+                                          "onTap": {
+                                            "_id": "3b8d1569-8bc6-4df9-8c43-039c64f118bf",
+                                            "_type": "KActionShowDialog",
+                                            "properties": {
+                                              "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                              "state": {
+                                                "color": "${state.noseColor}"
+                                              },
+                                              "barrierDismissible": "false",
+                                              "transition": "slideUp",
+                                              "alignment": "bottomCenter"
+                                            },
+                                            "actions": {
+                                              "onPop": {
+                                                "_id": "c80553d8-464a-4b3d-8277-8da11dfdddd0",
+                                                "_type": "KActionSetState",
+                                                "properties": {
+                                                  "newState": {
+                                                    "noseColor": "${value}"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "d599f35b-7edd-40a1-8e0c-38cc41eb5dcb",
+                                            "_type": "container",
+                                            "properties": {
+                                              "decoration": {
+                                                "color": "#e5c519",
+                                                "boxShape": "circle"
+                                              },
+                                              "width": "10",
+                                              "height": "10"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "_id": "c211662e-a892-47b2-9f09-f1866bffd50e",
+                                    "_type": "Positioned",
+                                    "name": "Front Wing Color",
+                                    "properties": {
+                                      "bottom": "20",
+                                      "left": "20"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "bad03a49-9fcf-474c-9541-af44cf614664",
+                                        "_type": "inkWell",
+                                        "name": "Front Wing Color",
+                                        "actions": {
+                                          "onTap": {
+                                            "_id": "9550f4b5-096d-498a-8b97-9b38b8a19534",
+                                            "_type": "KActionShowDialog",
+                                            "properties": {
+                                              "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                              "state": {
+                                                "color": "${state.frontWingColor}"
+                                              },
+                                              "barrierDismissible": "false",
+                                              "transition": "slideUp",
+                                              "alignment": "bottomCenter"
+                                            },
+                                            "actions": {
+                                              "onPop": {
+                                                "_id": "309257f1-f027-4c96-8fe9-ab200836c74c",
+                                                "_type": "KActionSetState",
+                                                "properties": {
+                                                  "newState": {
+                                                    "frontWingColor": "${value}"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "c57c985c-99c0-4596-bd02-13f03b603962",
+                                            "_type": "container",
+                                            "properties": {
+                                              "decoration": {
+                                                "color": "#e5c519",
+                                                "boxShape": "circle"
+                                              },
+                                              "width": "10",
+                                              "height": "10"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "_id": "1836f877-4490-4315-9770-9bb2e4ff9475",
+                                    "_type": "Positioned",
+                                    "name": "Back Wing Color",
+                                    "properties": {
+                                      "bottom": "110",
+                                      "right": "10"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "4ba67c3c-1f1e-4912-a620-dcba1bafafda",
+                                        "_type": "inkWell",
+                                        "name": "Back Wing Color",
+                                        "actions": {
+                                          "onTap": {
+                                            "_id": "092d30c2-a811-4314-be21-fc787e745185",
+                                            "_type": "KActionShowDialog",
+                                            "properties": {
+                                              "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                              "state": {
+                                                "color": "${state.backWingColor}"
+                                              },
+                                              "barrierDismissible": "false",
+                                              "transition": "slideUp",
+                                              "alignment": "bottomCenter"
+                                            },
+                                            "actions": {
+                                              "onPop": {
+                                                "_id": "0b02f1b5-040c-4fe1-b792-c7d483c7bf2c",
+                                                "_type": "KActionSetState",
+                                                "properties": {
+                                                  "newState": {
+                                                    "backWingColor": "${value}"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "59ba646c-bc39-4953-8c89-dd57cab7962f",
+                                            "_type": "container",
+                                            "properties": {
+                                              "decoration": {
+                                                "color": "#e5c519",
+                                                "boxShape": "circle"
+                                              },
+                                              "width": "10",
+                                              "height": "10"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "_id": "4e2f2dd5-01aa-4a55-b78d-c491994a563e",
+                                    "_type": "Positioned",
+                                    "name": "Side Pods Color",
+                                    "properties": {
+                                      "bottom": "20",
+                                      "left": "160"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "19b493b3-021d-43a0-a602-a524bde268d3",
+                                        "_type": "inkWell",
+                                        "name": "Side Pods Color",
+                                        "actions": {
+                                          "onTap": {
+                                            "_id": "61e6a24d-9233-42e2-9cb3-f01eaf46d869",
+                                            "_type": "KActionShowDialog",
+                                            "properties": {
+                                              "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                              "state": {
+                                                "color": "${state.sidePodsColor}"
+                                              },
+                                              "barrierDismissible": "false",
+                                              "transition": "slideUp",
+                                              "alignment": "bottomCenter"
+                                            },
+                                            "actions": {
+                                              "onPop": {
+                                                "_id": "0292697f-b863-4530-b702-acb0d0e4879d",
+                                                "_type": "KActionSetState",
+                                                "properties": {
+                                                  "newState": {
+                                                    "sidePodsColor": "${value}"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "70916a73-2c06-454d-9925-495a2bfebca3",
+                                            "_type": "container",
+                                            "properties": {
+                                              "decoration": {
+                                                "color": "#e5c519",
+                                                "boxShape": "circle"
+                                              },
+                                              "width": "10",
+                                              "height": "10"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "_id": "4d1c47b4-ef13-4ba2-9a16-f50e843c448f",
+                                    "_type": "Positioned",
+                                    "name": "Body Color",
+                                    "properties": {
+                                      "bottom": "110",
+                                      "left": "160"
+                                    },
+                                    "widgets": {
+                                      "child": {
+                                        "_id": "122386ea-7013-4a41-8b13-4499b127e6c0",
+                                        "_type": "inkWell",
+                                        "name": "Body Color",
+                                        "actions": {
+                                          "onTap": {
+                                            "_id": "fa584211-378c-47ef-883c-6e1823f1c13b",
+                                            "_type": "KActionShowDialog",
+                                            "properties": {
+                                              "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                              "state": {
+                                                "color": "${state.bodyColor}"
+                                              },
+                                              "barrierDismissible": "false",
+                                              "transition": "slideUp",
+                                              "alignment": "bottomCenter"
+                                            },
+                                            "actions": {
+                                              "onPop": {
+                                                "_id": "7ab54cd4-274c-4800-8d5c-7156f79527f2",
+                                                "_type": "KActionSetState",
+                                                "properties": {
+                                                  "newState": {
+                                                    "bodyColor": "${value}"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "187dd773-6d0c-4423-86a4-948e2f07e83d",
+                                            "_type": "container",
+                                            "properties": {
+                                              "decoration": {
+                                                "color": "#e5c519",
+                                                "boxShape": "circle"
+                                              },
+                                              "width": "10",
+                                              "height": "10"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "_id": "987653bd-bdf5-4687-b589-e5b8cd4933cf",
+                    "_type": "sizedBox",
+                    "properties": {
+                      "height": "20"
+                    }
+                  }
+                ]
+              }
+            },
+            "appBar": {
+              "_id": "a2f62a78-e406-4e5c-b5c2-fc5bcc4e4eea",
+              "_type": "appBar",
+              "properties": {
+                "title": "new_team"
+              }
+            }
+          }
+        }
+      },
+      "isRootNode": true
+    },
+    {
+      "_id": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+      "_type": "Screen",
+      "name": "Color Picker",
+      "widgets": {
+        "body": {
+          "_id": "52f81512-5fb7-4933-a0df-d69f8d74d3c5",
+          "_type": "material",
+          "properties": {
+            "shape": {
+              "borderRadius": [
+                "4"
+              ],
+              "width": "300",
+              "type": "roundedRectangle"
+            }
+          },
+          "widgets": {
+            "child": {
+              "_id": "aa8fc905-2107-4af5-89c3-25624ace6930",
+              "_type": "column",
+              "properties": {
+                "decorator": {
+                  "padding": [
+                    "20"
+                  ]
+                },
+                "mainAxisSize": "min",
+                "crossAxisAlignment": "stretch"
+              },
+              "widgets": {
+                "children": [
+                  {
+                    "_id": "dfe8e7b2-3200-439b-8546-414e67b28be5",
+                    "_type": "container",
+                    "properties": {
+                      "alignment": "center"
+                    },
+                    "widgets": {
+                      "child": {
+                        "_id": "d5dce793-1855-4705-83c1-e9e2890f742b",
+                        "_type": "ColorPicker",
+                        "properties": {
+                          "decorator": {
+                            "width": "320"
+                          },
+                          "displayThumbColor": "true",
+                          "hexInputBar": "true",
+                          "alias": "color"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "_id": "56b2ef55-cc05-425b-bd52-77a4454fc11b",
+                    "_type": "sizedBox",
+                    "properties": {
+                      "height": "10"
+                    }
+                  },
+                  {
+                    "_id": "50daa746-a8d6-4f86-8093-d069b89738a2",
+                    "_type": "textButton",
+                    "name": "Save Button",
+                    "properties": {
+                      "decorator": {
+                        "alignment": "centerRight"
+                      },
+                      "text": "Ok"
+                    },
+                    "actions": {
+                      "onPressed": {
+                        "_id": "614fcd37-f2dc-4652-85a0-97721d0730cd",
+                        "_type": "KActionPop",
+                        "properties": {
+                          "returnValue": "${state.color}"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "isRootNode": true
+    },
+    {
+      "_id": "d866a51a-50cc-4a0a-ae3b-3ebd51efa76c",
+      "_type": "Screen",
+      "name": "Team Management",
+      "_folder": "781c6bd2-acb6-4e51-bd27-797748b62052",
+      "widgets": {
+        "body": {
+          "_id": "4a3040a6-9465-4d5a-8ac1-a5f2e4da79ea",
+          "_type": "scaffold",
+          "name": "Team Management",
+          "widgets": {
+            "appBar": {
+              "_id": "6ee15be2-edeb-41af-b107-2527cfb492c5",
+              "_type": "appBar",
+              "properties": {
+                "title": "${state.name}"
+              }
+            },
+            "body": {
+              "_id": "94ad62be-aa5a-433c-858e-05d81279496b",
+              "_type": "SingleChildScrollView",
+              "widgets": {
+                "child": {
+                  "_id": "dc64d576-7e5f-4c16-8e17-09cafe2a3a89",
+                  "_type": "column",
+                  "properties": {
+                    "crossAxisAlignment": "stretch"
+                  },
+                  "widgets": {
+                    "children": [
+                      {
+                        "_id": "1336c5b8-fd7d-4bdd-8bae-5c9a06c915a7",
+                        "_type": "WidgetComponent",
+                        "name": "Name",
+                        "properties": {
+                          "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                          "title": "name"
+                        },
+                        "widgets": {
+                          "body": [
+                            {
+                              "_id": "4dd9c9aa-fe6f-43b0-82d5-e79c89a95c07",
+                              "_type": "textFormField",
+                              "name": "Input",
+                              "properties": {
+                                "alias": "name",
+                                "required": "true"
+                              },
+                              "actions": {
+                                "onChanged": {
+                                  "_id": "f11b6b24-4209-4fac-86d8-6da30c929aaf",
+                                  "_type": "UpdateTeam",
+                                  "properties": {
+                                    "id": "${state.id}",
+                                    "name": "${state.name}",
+                                    "returnName": "team"
+                                  },
+                                  "actions": {
+                                    "nextAction": {
+                                      "_id": "e0971053-fdd5-4467-8be6-7f94191936ce",
+                                      "_type": "KActionSetState",
+                                      "properties": {
+                                        "newState": "${team}"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "_id": "843a450d-2eab-4915-b12f-47ce41dd25cd",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "height": "20"
+                        }
+                      },
+                      {
+                        "_id": "97e0387f-44a3-4cd1-8c88-05fec03be188",
+                        "_type": "WidgetComponent",
+                        "name": "Livery",
+                        "properties": {
+                          "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                          "title": "livery"
+                        },
+                        "widgets": {
+                          "body": [
+                            {
+                              "_id": "c73cc716-1094-41bc-9785-0ff3643ec604",
+                              "_type": "container",
+                              "properties": {
+                                "alignment": "center"
+                              },
+                              "widgets": {
+                                "child": {
+                                  "_id": "0678a866-9111-4532-8ac4-7b69843aa924",
+                                  "_type": "stack",
+                                  "properties": {
+                                    "decorator": {
+                                      "height": "135",
+                                      "width": "300"
+                                    }
+                                  },
+                                  "widgets": {
+                                    "children": [
+                                      {
+                                        "_id": "cc48dfba-9fb5-4f39-8ac5-3df6e8932647",
+                                        "_type": "Positioned",
+                                        "name": "Car Position",
+                                        "properties": {
+                                          "left": "0",
+                                          "top": "0",
+                                          "right": "0",
+                                          "bottom": "0"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "fd57bfab-fd98-4e05-8fda-b0fb87b1a957",
+                                            "_type": "Car",
+                                            "name": "Car",
+                                            "properties": {
+                                              "height": "85",
+                                              "nose": "${state.colors.nose}",
+                                              "body": "${state.colors.body}",
+                                              "sidePods": "${state.colors.sidePods}",
+                                              "frontWing": "${state.colors.frontWing}",
+                                              "backWing": "${state.colors.backWing}",
+                                              "editable": "true"
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "_id": "bf08ea10-0a60-4b6f-a7a1-84a1775af52e",
+                                        "_type": "Positioned",
+                                        "name": "Nose Color",
+                                        "properties": {
+                                          "bottom": "70",
+                                          "left": "15"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "5308d0ad-539a-4e9f-84d0-c6c6f5c0c0a2",
+                                            "_type": "inkWell",
+                                            "name": "Nose Color",
+                                            "actions": {
+                                              "onTap": {
+                                                "_id": "2896f840-0da5-44b1-91c9-28fe2ea053fc",
+                                                "_type": "KActionShowDialog",
+                                                "properties": {
+                                                  "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                                  "state": {
+                                                    "color": "${state.colors.nose}"
+                                                  },
+                                                  "barrierDismissible": "false",
+                                                  "transition": "slideUp",
+                                                  "alignment": "bottomCenter"
+                                                },
+                                                "actions": {
+                                                  "onPop": {
+                                                    "_id": "5a029018-97a2-4407-860a-23ae0e64e24c",
+                                                    "_type": "UpdateTeam",
+                                                    "properties": {
+                                                      "id": "${state.id}",
+                                                      "noseColor": "${value}",
+                                                      "returnName": "team"
+                                                    },
+                                                    "actions": {
+                                                      "nextAction": {
+                                                        "_id": "4ce69afc-3816-44e0-8a2c-f26c8316e6f2",
+                                                        "_type": "KActionSetState",
+                                                        "properties": {
+                                                          "newState": "${team}"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "widgets": {
+                                              "child": {
+                                                "_id": "7ab2c4a4-e66d-4400-868e-a8e989803816",
+                                                "_type": "container",
+                                                "properties": {
+                                                  "decoration": {
+                                                    "color": "#e5c519",
+                                                    "boxShape": "circle"
+                                                  },
+                                                  "width": "10",
+                                                  "height": "10"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "_id": "f4ccb5e9-e78d-4382-8227-28417df041c3",
+                                        "_type": "Positioned",
+                                        "name": "Front Wing Color",
+                                        "properties": {
+                                          "bottom": "20",
+                                          "left": "20"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "6b994abc-8abc-4ca4-80ad-c5c174b1a5fd",
+                                            "_type": "inkWell",
+                                            "name": "Front Wing Color",
+                                            "actions": {
+                                              "onTap": {
+                                                "_id": "24510bfe-53a0-4315-8295-adc37ad0110c",
+                                                "_type": "KActionShowDialog",
+                                                "properties": {
+                                                  "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                                  "state": {
+                                                    "color": "${state.colors.frontWing}"
+                                                  },
+                                                  "barrierDismissible": "false",
+                                                  "transition": "slideUp",
+                                                  "alignment": "bottomCenter"
+                                                },
+                                                "actions": {
+                                                  "onPop": {
+                                                    "_id": "b254c462-0eab-4f57-9130-ac22c6be141d",
+                                                    "_type": "UpdateTeam",
+                                                    "properties": {
+                                                      "frontWingColor": "${value}",
+                                                      "id": "${state.id}"
+                                                    },
+                                                    "actions": {
+                                                      "nextAction": {
+                                                        "_id": "4a1d9e1f-ac04-493a-a416-2303aebfd75d",
+                                                        "_type": "KActionSetState",
+                                                        "properties": {
+                                                          "newState": "${team}"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "widgets": {
+                                              "child": {
+                                                "_id": "fb71b48e-d285-465e-842f-276e4e95e2c5",
+                                                "_type": "container",
+                                                "properties": {
+                                                  "decoration": {
+                                                    "color": "#e5c519",
+                                                    "boxShape": "circle"
+                                                  },
+                                                  "width": "10",
+                                                  "height": "10"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "_id": "ec1fc5c9-c04e-4731-8b4e-40cfaa821a49",
+                                        "_type": "Positioned",
+                                        "name": "Back Wing Color",
+                                        "properties": {
+                                          "bottom": "110",
+                                          "right": "10"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "310f3a2d-97f4-4896-a396-05ce585600b0",
+                                            "_type": "inkWell",
+                                            "name": "Back Wing Color",
+                                            "actions": {
+                                              "onTap": {
+                                                "_id": "bb245180-2ac9-402a-94e7-a0f46646d900",
+                                                "_type": "KActionShowDialog",
+                                                "properties": {
+                                                  "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                                  "state": {
+                                                    "color": "${state.colors.backWing}"
+                                                  },
+                                                  "barrierDismissible": "false",
+                                                  "transition": "slideUp",
+                                                  "alignment": "bottomCenter"
+                                                },
+                                                "actions": {
+                                                  "onPop": {
+                                                    "_id": "b7d5bc2f-44c4-43a2-8eb3-ed245550c741",
+                                                    "_type": "UpdateTeam",
+                                                    "properties": {
+                                                      "id": "${state.id}",
+                                                      "backWingColor": "${value}"
+                                                    },
+                                                    "actions": {
+                                                      "nextAction": {
+                                                        "_id": "9b442c6c-e817-4622-8836-17d894397f65",
+                                                        "_type": "KActionSetState",
+                                                        "properties": {
+                                                          "newState": "${team}"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "widgets": {
+                                              "child": {
+                                                "_id": "a0cc9a3b-930c-41fc-bc0f-ce8553a845b0",
+                                                "_type": "container",
+                                                "properties": {
+                                                  "decoration": {
+                                                    "color": "#e5c519",
+                                                    "boxShape": "circle"
+                                                  },
+                                                  "width": "10",
+                                                  "height": "10"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "_id": "60cc2c72-66c5-4e33-8f41-2f82712ca911",
+                                        "_type": "Positioned",
+                                        "name": "Side Pods Color",
+                                        "properties": {
+                                          "bottom": "20",
+                                          "left": "160"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "db7a8584-62f1-4386-abb2-4c850325a7e4",
+                                            "_type": "inkWell",
+                                            "name": "Side Pods Color",
+                                            "actions": {
+                                              "onTap": {
+                                                "_id": "86e6a08d-5b63-4c94-8a2e-7c66625e363f",
+                                                "_type": "KActionShowDialog",
+                                                "properties": {
+                                                  "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                                  "state": {
+                                                    "color": "${state.colors.sidePods}"
+                                                  },
+                                                  "barrierDismissible": "false",
+                                                  "transition": "slideUp",
+                                                  "alignment": "bottomCenter"
+                                                },
+                                                "actions": {
+                                                  "onPop": {
+                                                    "_id": "0cb36a83-5b7e-40ca-892a-20c52c6dac0b",
+                                                    "_type": "UpdateTeam",
+                                                    "properties": {
+                                                      "id": "${state.id}",
+                                                      "sidePodsColor": "${value}"
+                                                    },
+                                                    "actions": {
+                                                      "nextAction": {
+                                                        "_id": "7c69350e-3391-460e-bb37-8461903002da",
+                                                        "_type": "KActionSetState",
+                                                        "properties": {
+                                                          "newState": "${team}"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "widgets": {
+                                              "child": {
+                                                "_id": "02bb3087-2a74-4f2e-89f4-acec38036cb3",
+                                                "_type": "container",
+                                                "properties": {
+                                                  "decoration": {
+                                                    "color": "#e5c519",
+                                                    "boxShape": "circle"
+                                                  },
+                                                  "width": "10",
+                                                  "height": "10"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "_id": "0a17079c-f20e-49f9-9c20-9b4c8acec35c",
+                                        "_type": "Positioned",
+                                        "name": "Body Color",
+                                        "properties": {
+                                          "bottom": "110",
+                                          "left": "160"
+                                        },
+                                        "widgets": {
+                                          "child": {
+                                            "_id": "64c42188-12bb-458e-9eb6-36ee94e0fef8",
+                                            "_type": "inkWell",
+                                            "name": "Body Color",
+                                            "actions": {
+                                              "onTap": {
+                                                "_id": "efb265b3-a257-4e70-abda-d81325d9c8c5",
+                                                "_type": "KActionShowDialog",
+                                                "properties": {
+                                                  "jumpToScreen": "6a1c14f1-a9f2-481f-8308-63832c2b5404",
+                                                  "state": {
+                                                    "color": "${state.colors.body}"
+                                                  },
+                                                  "barrierDismissible": "false",
+                                                  "transition": "slideUp",
+                                                  "alignment": "bottomCenter"
+                                                },
+                                                "actions": {
+                                                  "onPop": {
+                                                    "_id": "8789870f-c866-4ae5-8c54-12356a6fc45d",
+                                                    "_type": "UpdateTeam",
+                                                    "properties": {
+                                                      "id": "${state.id}",
+                                                      "bodyColor": "${value}"
+                                                    },
+                                                    "actions": {
+                                                      "nextAction": {
+                                                        "_id": "ac90e0f2-2a93-4411-aa30-1a453857bc29",
+                                                        "_type": "KActionSetState",
+                                                        "properties": {
+                                                          "newState": "${team}"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "widgets": {
+                                              "child": {
+                                                "_id": "e92beb3e-e792-4530-a21c-545c3b04646f",
+                                                "_type": "container",
+                                                "properties": {
+                                                  "decoration": {
+                                                    "color": "#e5c519",
+                                                    "boxShape": "circle"
+                                                  },
+                                                  "width": "10",
+                                                  "height": "10"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "_id": "424e43ec-118a-4d7c-9a2d-c8275284732d",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "height": "20",
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${state.driver1}",
+                            "not": "true"
+                          }
+                        }
+                      },
+                      {
+                        "_id": "564a90f2-6218-4243-8929-ae184f0634db",
+                        "_type": "WidgetComponent",
+                        "name": "Driver 1",
+                        "properties": {
+                          "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                          "title": "first_driver",
+                          "linkText": "change",
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${state.driver1}",
+                            "not": "true"
+                          }
+                        },
+                        "actions": {
+                          "link": {
+                            "_id": "bf847503-f533-441a-8d2d-2d5e6fa60df4",
+                            "_type": "KActionNavigate",
+                            "properties": {
+                              "jumpToScreen": "bded4935-bac6-4743-8730-484f1487a110"
+                            }
+                          }
+                        },
+                        "widgets": {
+                          "body": [
+                            {
+                              "_id": "82fd6263-e155-483a-a5b9-ba732e29b06d",
+                              "_type": "WidgetComponent",
+                              "properties": {
+                                "component": "d767503b-407e-48d0-8d2e-5be9e579d218",
+                                "value": "${state.driver1}"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "_id": "7698e3aa-1690-4285-80aa-dd56bd732b03",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "height": "20",
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${state.driver2}",
+                            "not": "true"
+                          }
+                        }
+                      },
+                      {
+                        "_id": "32a7be0d-77e5-4e6a-ab45-b966033d7808",
+                        "_type": "WidgetComponent",
+                        "name": "Driver 2",
+                        "properties": {
+                          "component": "582d7108-67af-4d26-b1b0-22ee135f6af2",
+                          "title": "second_driver",
+                          "linkText": "change",
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${state.driver2}",
+                            "not": "true"
+                          }
+                        },
+                        "actions": {
+                          "link": {
+                            "_id": "6f284bf7-0b20-4ab1-8ad3-92fd3bcc2902",
+                            "_type": "KActionNavigate",
+                            "properties": {
+                              "jumpToScreen": "bded4935-bac6-4743-8730-484f1487a110"
+                            }
+                          }
+                        },
+                        "widgets": {
+                          "body": [
+                            {
+                              "_id": "c7663768-68cd-4748-9a5f-171bfadd3189",
+                              "_type": "WidgetComponent",
+                              "properties": {
+                                "component": "d767503b-407e-48d0-8d2e-5be9e579d218",
+                                "value": "${state.driver2}"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "isRootNode": true
+    },
+    {
+      "_id": "bded4935-bac6-4743-8730-484f1487a110",
+      "_type": "Screen",
+      "name": "Select Driver",
+      "_folder": "781c6bd2-acb6-4e51-bd27-797748b62052",
+      "widgets": {
+        "body": {
+          "_id": "ed4f8e9b-fa9a-4d41-8644-443706cf0a6d",
+          "_type": "scaffold",
+          "name": "Select Driver",
+          "widgets": {
+            "appBar": {
+              "_id": "c7247182-83e2-448c-8201-9a89b4a8875f",
+              "_type": "appBar",
+              "properties": {
+                "title": "drivers"
+              }
+            },
+            "body": {
+              "_id": "ae3fbc17-25e3-4ef4-8c01-ad56242b4d4b",
+              "_type": "listView",
+              "name": "Driver List",
+              "properties": {
+                "shrinkWrap": "false"
+              },
+              "actions": {
+                "loadPage": {
+                  "_id": "3731802e-f26d-4b5f-9c7c-333305012f47",
+                  "_type": "LoadDrivers"
+                }
+              },
+              "widgets": {
+                "child": {
+                  "_id": "40e26eb9-dbca-42cb-a1c4-3adf3cb4863f",
+                  "_type": "listTile",
+                  "properties": {
+                    "value": "${entry.name}",
+                    "subValue": "${entry.teamName}",
+                    "visualDensity": "compact"
+                  },
+                  "widgets": {
+                    "title": {
+                      "_id": "7b9e77ae-19ce-4133-9bb2-81373d248501",
+                      "_type": "text",
+                      "properties": {
+                        "alias": "name"
+                      }
+                    },
+                    "subtitle": {
+                      "_id": "51d67050-997c-4529-8752-e17a0ec3598e",
+                      "_type": "text",
+                      "properties": {
+                        "alias": "teamName"
+                      },
+                      "_template": "f3cb19fb-4b52-4ed9-bc83-5b8ede2ec520"
+                    },
+                    "trailing": {
+                      "_id": "662f7ce6-662f-4b34-9ba1-acd4a2982931",
+                      "_type": "row",
+                      "properties": {
+                        "mainAxisSize": "min"
+                      },
+                      "widgets": {
+                        "children": [
+                          {
+                            "_id": "593bd46b-7d7d-43e6-8932-87ca74a63e88",
+                            "_type": "text",
+                            "properties": {
+                              "alias": "hireCost"
+                            },
+                            "_template": "f0fcec29-f714-4874-853c-ef3e3cd90964"
+                          },
+                          {
+                            "_id": "b596d941-3825-4b44-94e7-98c86808f160",
+                            "_type": "iconButton",
+                            "name": "Hire",
+                            "properties": {
+                              "iconCode": "0xe41d"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "isRootNode": true
     }
   ],
   "templates": [
@@ -4763,7 +6006,7 @@
                     "decorator": {
                       "width": "20"
                     },
-                    "value": "${math.add(${idx},1)}",
+                    "value": "${toInt(${math.add(${idx},1)})}",
                     "textAlign": "center"
                   }
                 },
@@ -4834,7 +6077,7 @@
                     "style": {
                       "fontSize": "12"
                     },
-                    "alias": "shortName"
+                    "alias": "lastName"
                   }
                 }
               ]
@@ -5431,7 +6674,7 @@
                                     "_type": "text",
                                     "name": "Short Name",
                                     "properties": {
-                                      "value": "${component.poleDriver.shortName}",
+                                      "value": "${component.poleDriver.lastName}",
                                       "format": {
                                         "_type": "KFormatterTranslate",
                                         "transform": "upper"
@@ -5512,7 +6755,7 @@
                                     "_type": "text",
                                     "name": "Short Name",
                                     "properties": {
-                                      "value": "${component.fastestDriver.shortName}",
+                                      "value": "${component.fastestDriver.lastName}",
                                       "format": {
                                         "_type": "KFormatterTranslate",
                                         "transform": "upper"
@@ -5605,7 +6848,7 @@
                         "_type": "text",
                         "name": "P1 Driver",
                         "properties": {
-                          "value": "${component.driver1.shortName}",
+                          "value": "${component.driver1.lastName}",
                           "format": {
                             "_type": "KFormatterTranslate",
                             "transform": "upper"
@@ -5681,7 +6924,7 @@
                         "_type": "text",
                         "name": "P2 Driver",
                         "properties": {
-                          "value": "${component.driver2.shortName}",
+                          "value": "${component.driver2.lastName}",
                           "format": {
                             "_type": "KFormatterTranslate",
                             "transform": "upper"
@@ -5778,7 +7021,7 @@
                         "_type": "text",
                         "name": "P3 Driver",
                         "properties": {
-                          "value": "${component.driver3.shortName}",
+                          "value": "${component.driver3.lastName}",
                           "format": {
                             "_type": "KFormatterTranslate",
                             "transform": "upper"
@@ -5790,6 +7033,237 @@
                       }
                     ]
                   }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "isRootNode": true
+    },
+    {
+      "_id": "d767503b-407e-48d0-8d2e-5be9e579d218",
+      "_type": "row",
+      "name": "Player Driver",
+      "properties": {
+        "crossAxisAlignment": "center"
+      },
+      "widgets": {
+        "children": [
+          {
+            "_id": "93ca3954-f96f-4df1-89d3-f626d160688b",
+            "_type": "Transform",
+            "name": "Helmet",
+            "properties": {
+              "transform": {
+                "_type": "flip",
+                "flipX": "true"
+              },
+              "alignment": "center"
+            },
+            "widgets": {
+              "child": {
+                "_id": "e79537bf-1076-42de-a0b3-18d0075b176e",
+                "_type": "icon",
+                "properties": {
+                  "iconCode": "0xe5ef",
+                  "size": "60"
+                }
+              }
+            }
+          },
+          {
+            "_id": "850948a6-314f-4af8-8f7a-1a1c342e1e65",
+            "_type": "sizedBox",
+            "properties": {
+              "width": "10"
+            }
+          },
+          {
+            "_id": "b5c869ea-ebf6-4e34-86e9-0fd557544482",
+            "_type": "column",
+            "name": "Name",
+            "properties": {
+              "crossAxisAlignment": "start"
+            },
+            "widgets": {
+              "children": [
+                {
+                  "_id": "244ae95a-9e84-4e80-8295-507cf288fc05",
+                  "_type": "text",
+                  "name": "First Name",
+                  "properties": {
+                    "value": "${component.firstName}"
+                  },
+                  "_template": "f3cb19fb-4b52-4ed9-bc83-5b8ede2ec520"
+                },
+                {
+                  "_id": "480be351-9f50-4330-800e-b3adba87f4ae",
+                  "_type": "text",
+                  "name": "Last Name",
+                  "properties": {
+                    "value": "${component.lastName}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "_id": "be9e3a8d-e080-4199-94bb-ea9741a67145",
+            "_type": "sizedBox",
+            "properties": {
+              "width": "20",
+              "wrapExpanded": "true"
+            }
+          },
+          {
+            "_id": "f064eff8-a0b9-405a-a960-61939106f46d",
+            "_type": "column",
+            "name": "Stats",
+            "properties": {
+              "crossAxisAlignment": "start"
+            },
+            "widgets": {
+              "children": [
+                {
+                  "_id": "7898cdaa-89a4-4b19-8c3b-0ccca39f5a19",
+                  "_type": "row",
+                  "name": "Poles",
+                  "widgets": {
+                    "children": [
+                      {
+                        "_id": "1a29fd94-0e6d-424d-8acf-1f01929bccac",
+                        "_type": "text",
+                        "properties": {
+                          "value": "${component.poles}"
+                        }
+                      },
+                      {
+                        "_id": "bf22cce9-e829-4cd0-826f-5aafb4cb7d5b",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "width": "5"
+                        }
+                      },
+                      {
+                        "_id": "b2a180aa-5333-4e5d-8988-8c6d8046f4d3",
+                        "_type": "text",
+                        "properties": {
+                          "value": "poles"
+                        },
+                        "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "_id": "f2f065f0-4320-4b8d-b073-02a19be20ff1",
+                  "_type": "row",
+                  "name": "Victories",
+                  "widgets": {
+                    "children": [
+                      {
+                        "_id": "ee78fab8-76ae-4f24-a2af-a3d36833a59d",
+                        "_type": "text",
+                        "properties": {
+                          "value": "${component.victories}"
+                        }
+                      },
+                      {
+                        "_id": "8251a222-f407-47e7-ad2e-71c58039311f",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "width": "5"
+                        }
+                      },
+                      {
+                        "_id": "dfb98aad-c48b-4f57-a8fc-48c853767921",
+                        "_type": "text",
+                        "properties": {
+                          "value": "victories"
+                        },
+                        "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "_id": "3a44718c-8d1d-4709-8d4d-7578bfd5c1a4",
+                  "_type": "row",
+                  "name": "Podiums",
+                  "widgets": {
+                    "children": [
+                      {
+                        "_id": "6d825930-10ff-4796-8d07-bbf5f56ab0e8",
+                        "_type": "text",
+                        "properties": {
+                          "value": "${component.podiums}"
+                        }
+                      },
+                      {
+                        "_id": "165bff4d-65dc-4e38-8296-6b1352c21492",
+                        "_type": "sizedBox",
+                        "properties": {
+                          "width": "5"
+                        }
+                      },
+                      {
+                        "_id": "652bbb9e-a91d-4b69-85eb-8c1632d0d6a3",
+                        "_type": "text",
+                        "properties": {
+                          "value": "podiums"
+                        },
+                        "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "_id": "6570a480-8406-441e-87e4-bb13ac8a7dbf",
+            "_type": "sizedBox",
+            "properties": {
+              "width": "30"
+            }
+          },
+          {
+            "_id": "7f574a9a-46fe-4b8b-8cb9-f1a87627f1a3",
+            "_type": "column",
+            "name": "Season Points",
+            "widgets": {
+              "children": [
+                {
+                  "_id": "11269984-f091-4a16-a508-7154a0111341",
+                  "_type": "text",
+                  "properties": {
+                    "buildCondition": {
+                      "_type": "NullOrEmpty",
+                      "not": "true"
+                    },
+                    "value": "season"
+                  },
+                  "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
+                },
+                {
+                  "_id": "59a24826-9191-4b54-bb7f-fa098ac9c678",
+                  "_type": "text",
+                  "properties": {
+                    "style": {
+                      "fontSize": "30",
+                      "height": "1"
+                    },
+                    "value": "${component.seasonPoints}"
+                  }
+                },
+                {
+                  "_id": "737bb245-1b20-4176-b9c0-ef727bb07082",
+                  "_type": "text",
+                  "properties": {
+                    "value": "pts"
+                  },
+                  "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
                 }
               ]
             }
@@ -5811,6 +7285,12 @@
       "_type": "Folder",
       "name": "Event",
       "isRootNode": true
+    },
+    {
+      "_id": "781c6bd2-acb6-4e51-bd27-797748b62052",
+      "_type": "Folder",
+      "name": "Player",
+      "isRootNode": true
     }
   ],
   "environmentData": {
@@ -5824,9 +7304,9 @@
     ],
     "values": [
       [
-        "#e10600",
-        "#e10600",
-        "#e10600"
+        "#e5c519",
+        "#e5c519",
+        "#e5c519"
       ]
     ]
   },
@@ -5887,7 +7367,16 @@
       "continue_race",
       "go_to_next_event",
       "laps_remaining",
-      "leader"
+      "leader",
+      "my_team",
+      "name",
+      "car",
+      "livery",
+      "new_team",
+      "first_driver",
+      "second_driver",
+      "change",
+      "season"
     ],
     "values": [
       [
@@ -6097,6 +7586,42 @@
       [
         "leader",
         "líder"
+      ],
+      [
+        "my team",
+        "a minha equipa"
+      ],
+      [
+        "name",
+        "nome"
+      ],
+      [
+        "car",
+        "carro"
+      ],
+      [
+        "livery",
+        "decoração"
+      ],
+      [
+        "new team",
+        "nova equipa"
+      ],
+      [
+        "first driver",
+        "primeiro piloto"
+      ],
+      [
+        "second driver",
+        "segundo piloto"
+      ],
+      [
+        "change",
+        "alterar"
+      ],
+      [
+        "season",
+        "temporada"
       ]
     ]
   }
