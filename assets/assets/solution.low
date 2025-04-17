@@ -489,6 +489,7 @@
         "body": {
           "_id": "7582cf60-7613-4889-87f5-654577633a78",
           "_type": "scaffold",
+          "name": "Season Overview",
           "widgets": {
             "body": {
               "_id": "41f34e6a-9ded-4390-89e9-4e63e25bb1cf",
@@ -572,8 +573,8 @@
                               },
                               "widgets": {
                                 "noEntriesWidget": {
-                                  "_id": "6829c55f-a728-41df-9815-d3fc8d520a91",
-                                  "_type": "text"
+                                  "_id": "37cb9392-5c5b-400b-83ac-9a2f95a55638",
+                                  "_type": "sizedBox"
                                 },
                                 "child": {
                                   "_id": "804c05c2-3dc0-41f5-bbb3-d7c9a39c3973",
@@ -1009,7 +1010,13 @@
                       "buildCondition": {
                         "_type": "NullOrEmpty",
                         "value": "${state.tracks}",
-                        "not": "true"
+                        "not": "true",
+                        "or": {
+                          "_type": "OperatorCondition",
+                          "left": "${state.currentRace.finished}",
+                          "operator": "!=",
+                          "right": "true"
+                        }
                       }
                     },
                     "actions": {
@@ -1095,7 +1102,13 @@
                       },
                       "buildCondition": {
                         "_type": "NullOrEmpty",
-                        "value": "${state.tracks}"
+                        "value": "${state.tracks}",
+                        "and": {
+                          "_type": "OperatorCondition",
+                          "left": "${state.currentRace.finished}",
+                          "operator": "==",
+                          "right": "true"
+                        }
                       }
                     },
                     "actions": {
@@ -1107,20 +1120,13 @@
                             "_id": "c987503a-2cd4-42de-bc99-bfb57e3ab69a",
                             "_type": "SeasonDriverHire",
                             "properties": {
-                              "returnName": "hireData"
+                              "returnName": "hireData",
+                              "driverSelectionScreen": "bded4935-bac6-4743-8730-484f1487a110"
                             },
                             "actions": {
-                              "onFinished": {
-                                "_id": "20bd07cb-3116-442d-8024-2ced7fd41b2a",
+                              "nextAction": {
+                                "_id": "13b6f94a-840d-4508-a6cd-606bf45154b1",
                                 "_type": "KActionReload"
-                              },
-                              "onPlayerTeam": {
-                                "_id": "40f1a6d6-6779-4cce-8ac0-96d847955aac",
-                                "_type": "KActionNavigate",
-                                "properties": {
-                                  "jumpToScreen": "bded4935-bac6-4743-8730-484f1487a110",
-                                  "state": "${hireData}"
-                                }
                               }
                             }
                           }
@@ -6805,7 +6811,8 @@
               "_id": "43d86fb3-be3c-40f6-85c3-c6f6afb17017",
               "_type": "appBar",
               "properties": {
-                "title": "${state.team.name}"
+                "title": "${state.team.name}",
+                "leadingIcon": "close"
               },
               "widgets": {
                 "actions": [
@@ -7433,6 +7440,15 @@
                                 "required": "true",
                                 "alias": "year"
                               }
+                            },
+                            {
+                              "_id": "f3159ebf-9f68-49a6-94bf-4fb515a3c8dd",
+                              "_type": "checkbox",
+                              "properties": {
+                                "title": "randomize_description",
+                                "alias": "randomize",
+                                "contentPadding": "0"
+                              }
                             }
                           ]
                         }
@@ -7536,7 +7552,8 @@
                                           "playerTeams": "${value}",
                                           "returnName": "playerTeams",
                                           "validateForm": "true",
-                                          "pointsSystem": "${state.points}"
+                                          "pointsSystem": "${state.points}",
+                                          "randomize": "${state.randomize}"
                                         },
                                         "actions": {
                                           "nextAction": {
@@ -7639,11 +7656,22 @@
                                     },
                                     "actions": {
                                       "onTap": {
-                                        "_id": "23b5b4b9-d9d1-4f3c-8c46-e09c4c75e78a",
-                                        "_type": "KActionNavigate",
+                                        "_id": "32e08f28-0d3b-4a62-a2cf-21bf8c1b15ed",
+                                        "_type": "New2024Season",
                                         "properties": {
-                                          "jumpToScreen": "9b5ab083-6dbe-4a7b-8893-49b805b34e36",
-                                          "replaceAll": "true"
+                                          "validateForm": "true",
+                                          "pointsSystem": "${state.points}",
+                                          "randomize": "${state.randomize}"
+                                        },
+                                        "actions": {
+                                          "nextAction": {
+                                            "_id": "41d3c5d8-df74-40cc-acd6-25ca7bc1b536",
+                                            "_type": "KActionNavigate",
+                                            "properties": {
+                                              "jumpToScreen": "9b5ab083-6dbe-4a7b-8893-49b805b34e36",
+                                              "replaceAll": "true"
+                                            }
+                                          }
                                         }
                                       }
                                     }
@@ -8147,51 +8175,106 @@
                   }
                 },
                 {
-                  "_id": "dfeadd73-69c6-4a55-9dba-92404aef9f8a",
-                  "_type": "text",
+                  "_id": "b3a4efd4-2a01-4c66-882c-f51324d49ac9",
+                  "_type": "column",
                   "name": "Name",
                   "properties": {
-                    "buildCondition": {
-                      "_type": "OperatorCondition",
-                      "left": "${media.width}",
-                      "operator": ">=",
-                      "right": "600",
-                      "or": {
-                        "_type": "NullOrEmpty",
-                        "value": "${entry.lastName}"
-                      }
-                    },
-                    "format": {
-                      "_type": "KFormatterTranslate",
-                      "transform": "upper"
-                    },
-                    "alias": "name"
+                    "mainAxisSize": "min",
+                    "crossAxisAlignment": "start",
+                    "mainAxisAlignment": "center"
                   },
-                  "_template": "cc61449d-fd70-42c3-8b3d-69088bd55644"
-                },
-                {
-                  "_id": "d953db00-4884-4b16-98c2-47e2dbaeec87",
-                  "_type": "text",
-                  "name": "Short Name",
-                  "properties": {
-                    "buildCondition": {
-                      "_type": "OperatorCondition",
-                      "left": "${media.width}",
-                      "operator": "<",
-                      "right": "600",
-                      "and": {
-                        "_type": "NullOrEmpty",
-                        "value": "${entry.lastName}",
-                        "not": "true"
+                  "widgets": {
+                    "children": [
+                      {
+                        "_id": "dfeadd73-69c6-4a55-9dba-92404aef9f8a",
+                        "_type": "text",
+                        "name": "Name",
+                        "properties": {
+                          "buildCondition": {
+                            "_type": "OperatorCondition",
+                            "left": "${media.width}",
+                            "operator": ">=",
+                            "right": "600",
+                            "or": {
+                              "_type": "NullOrEmpty",
+                              "value": "${entry.lastName}"
+                            }
+                          },
+                          "format": {
+                            "_type": "KFormatterTranslate",
+                            "transform": "upper"
+                          },
+                          "alias": "name"
+                        },
+                        "_template": "cc61449d-fd70-42c3-8b3d-69088bd55644"
+                      },
+                      {
+                        "_id": "189d2f07-1709-4e55-87a2-d286a96c6f8a",
+                        "_type": "text",
+                        "name": "Short Name",
+                        "properties": {
+                          "buildCondition": {
+                            "_type": "OperatorCondition",
+                            "left": "${media.width}",
+                            "operator": "<",
+                            "right": "600",
+                            "and": {
+                              "_type": "NullOrEmpty",
+                              "value": "${entry.lastName}",
+                              "not": "true"
+                            }
+                          },
+                          "format": {
+                            "_type": "KFormatterTranslate",
+                            "transform": "upper"
+                          },
+                          "alias": "lastName"
+                        },
+                        "_template": "cc61449d-fd70-42c3-8b3d-69088bd55644"
+                      },
+                      {
+                        "_id": "d1548b96-65b7-4654-88fe-ea85c8aad314",
+                        "_type": "text",
+                        "name": "Team",
+                        "properties": {
+                          "style": {
+                            "fontSize": "9",
+                            "color": "#777"
+                          },
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${entry.teamName}",
+                            "not": "true"
+                          },
+                          "value": "${entry.teamName}"
+                        },
+                        "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
+                      },
+                      {
+                        "_id": "55056930-caa8-408a-8475-c717d4fb70d1",
+                        "_type": "text",
+                        "name": "Drivers",
+                        "properties": {
+                          "buildCondition": {
+                            "_type": "NullOrEmpty",
+                            "value": "${entry.driver1}",
+                            "not": "true",
+                            "or": {
+                              "_type": "NullOrEmpty",
+                              "value": "${entry.driver2}",
+                              "not": "true"
+                            }
+                          },
+                          "style": {
+                            "color": "#777",
+                            "fontSize": "9"
+                          },
+                          "value": "${entry.driver1} / ${entry.driver2}"
+                        },
+                        "_template": "54c7aeb7-7b84-4ae5-8224-507838af0d6e"
                       }
-                    },
-                    "format": {
-                      "_type": "KFormatterTranslate",
-                      "transform": "upper"
-                    },
-                    "alias": "lastName"
-                  },
-                  "_template": "cc61449d-fd70-42c3-8b3d-69088bd55644"
+                    ]
+                  }
                 }
               ]
             }
@@ -8694,38 +8777,16 @@
           }
         },
         "subtitle": {
-          "_id": "02a58c9a-de5c-4cc5-877e-ac3753341aa3",
-          "_type": "column",
+          "_id": "271de91f-035d-4785-818c-c5124ddba735",
+          "_type": "text",
           "name": "Drivers",
           "properties": {
             "mainAxisSize": "min",
-            "crossAxisAlignment": "stretch"
-          },
-          "widgets": {
-            "children": [
-              {
-                "_id": "271de91f-035d-4785-818c-c5124ddba735",
-                "_type": "text",
-                "name": "Driver 1",
-                "properties": {
-                  "style": {
-                    "color": "#999"
-                  },
-                  "value": "${component.team.driver1}"
-                }
-              },
-              {
-                "_id": "3e8aa1dc-3663-4b6c-8af4-125c67722c42",
-                "_type": "text",
-                "name": "Driver 2",
-                "properties": {
-                  "style": {
-                    "color": "#999"
-                  },
-                  "value": "${component.team.driver2}"
-                }
-              }
-            ]
+            "crossAxisAlignment": "stretch",
+            "style": {
+              "color": "#999"
+            },
+            "value": "${component.team.driver1} / ${component.team.driver2}"
           }
         }
       },
@@ -8772,7 +8833,6 @@
                         "name": "Pole",
                         "properties": {
                           "mainAxisSize": "min",
-                          "wrapExpanded": "true",
                           "buildCondition": {
                             "_type": "NullOrEmpty",
                             "value": "${component.poleDriver}",
@@ -10478,7 +10538,8 @@
       "10-8",
       "10-6",
       "9-6",
-      "no_teams_created"
+      "no_teams_created",
+      "randomize_description"
     ],
     "values": [
       [
@@ -10832,6 +10893,10 @@
       [
         "no teams created",
         "nenhuma equipa criada"
+      ],
+      [
+        "randomize driver placement",
+        "randomizar a colocação dos pilotos"
       ]
     ]
   }
